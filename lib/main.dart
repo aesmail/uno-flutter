@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:uno/widgets/uno_card.dart';
-import 'package:uno/widgets/uno_deck.dart';
+import 'package:uno/widgets/uno_card_widget.dart';
+import 'package:uno/widgets/uno_deck_widget.dart';
+import 'package:uno/widgets/uno_hand_widget.dart';
+
+import 'models/uno_deck.dart';
+import 'models/uno_hand.dart';
 
 void main() => runApp(MyApp());
 
@@ -9,11 +13,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Uno',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'عونو التجريبي'),
+      home: MyHomePage(title: 'Uno Flutter'),
     );
   }
 }
@@ -28,14 +32,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Widget deck;
-  List<UnoCard> _currentPlay;
+  UnoDeck deck;
+  UnoHand hand;
+  List<UnoCardWidget> thrown = [];
 
   @override
   initState() {
     super.initState();
     deck = UnoDeck();
-    _currentPlay = [];
+    hand = deck.dealHand(cardCount: 7);
   }
 
   @override
@@ -51,25 +56,23 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () => print("draw card"),
               child: Text("Deck Goes Here"),
             ),
-            Expanded(child: deck),
-            DragTarget<UnoCard>(
-              onWillAccept: (UnoCard value) {
+            DragTarget<UnoCardWidget>(
+              onWillAccept: (UnoCardWidget value) {
                 return true;
               },
-              onAccept: (UnoCard value) {
-                _currentPlay.add(value);
+              onAccept: (UnoCardWidget value) {
+                this.setState(() {
+                  hand.drawCard(value.card);
+                  thrown.add(value);
+                });
               },
-              // onLeave: (value) {
-              //   print("the value left");
-              //   print(value);
-              // },
               builder: (context, list1, list2) {
-                // print("building the DragTarget");
-                return _currentPlay.isNotEmpty
-                    ? _currentPlay.last
+                return thrown.isNotEmpty
+                    ? thrown.last
                     : Container(color: Colors.grey, height: 200, width: 200);
               },
             ),
+            Expanded(child: hand.toWidget()),
           ],
         ),
       ),

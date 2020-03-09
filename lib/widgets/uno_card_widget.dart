@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:uno/models/uno_card.dart';
 
-class UnoCard extends StatelessWidget {
-  const UnoCard({Key key, @required this.symbol, @required this.color})
-      : super(key: key);
+class UnoCardWidget extends StatelessWidget {
+  const UnoCardWidget({Key key, @required this.card}) : super(key: key);
 
-  factory UnoCard.fromCard(UnoCard card) {
-    return UnoCard(color: card.color, symbol: card.symbol);
-  }
-
-  final String symbol;
-  final Color color;
+  final UnoCard card;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +12,7 @@ class UnoCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(10)),
         border: Border.all(color: Colors.black26, width: 0.5),
-        color: this.color,
+        color: this.card.color,
       ),
       height: 150,
       width: 100,
@@ -30,7 +25,7 @@ class UnoCard extends StatelessWidget {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 5, left: 7),
-                    child: Text(this.symbol,
+                    child: Text(this.card.symbol,
                         textAlign: TextAlign.left,
                         style: TextStyle(
                             color: Colors.white,
@@ -49,7 +44,7 @@ class UnoCard extends StatelessWidget {
             ),
             Center(
               child: Text(
-                this.symbol,
+                this.card.symbol,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 90,
