@@ -7,11 +7,11 @@ class UnoDeck {
 
   void shuffle() => cards.shuffle();
 
-  UnoHand dealHand({int cardCount = 7}) {
+  UnoHand dealHand({int cardCount = 7, bool isHidden = false}) {
     if (cards.length > cardCount) {
       List<UnoCard> _hand = cards.sublist(0, cardCount);
       cards.removeRange(0, cardCount);
-      return UnoHand(cards: _hand);
+      return UnoHand(cards: _hand, isHidden: isHidden);
     }
     return null;
   }

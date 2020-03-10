@@ -31,13 +31,15 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   UnoDeck deck;
   UnoHand hand;
+  UnoHand opponent;
   List<UnoCardWidget> thrown = [];
 
   @override
   initState() {
     super.initState();
     deck = UnoDeck();
-    hand = deck.dealHand(cardCount: 7);
+    hand = deck.dealHand();
+    opponent = deck.dealHand(isHidden: true);
   }
 
   @override
@@ -49,36 +51,39 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Column(
           children: [
-            FlatButton(
-              onPressed: () {
-                this.setState(() {
-                  thrown.clear();
-                  deck = UnoDeck();
-                  hand.copyHand(deck.dealHand());
-                });
-              },
-              child: Text("Reset Hand"),
-            ),
-            DragTarget<UnoCardWidget>(
-              onWillAccept: (UnoCardWidget value) {
-                return true;
-              },
-              onAccept: (UnoCardWidget value) {
-                this.setState(() {
-                  hand.drawCard(value.card);
-                  thrown.add(value);
-                });
-              },
-              builder: (context, list1, list2) {
-                return thrown.isNotEmpty
-                    ? thrown.last
-                    : Container(color: Colors.grey, height: 200, width: 200);
-              },
-            ),
+            Expanded(child: opponent.toWidget()),
+            playTable(context),
             Expanded(child: hand.toWidget()),
           ],
         ),
       ),
+    );
+  }
+
+  Widget playTable(context) {
+    Size screen = MediaQuery.of(context).size;
+    return DragTarget<UnoCardWidget>(
+      onWillAccept: (UnoCardWidget value) {
+        return true;
+      },
+      onAccept: (UnoCardWidget cardWidget) {
+        this.setState(() {
+          cardWidget.card.isHidden = false;
+          hand.drawCard(cardWidget.card);
+          thrown.add(cardWidget);
+        });
+      },
+      builder: (context, list1, list2) {
+        return thrown.isNotEmpty
+            ? Container(
+                color: Colors.green[200],
+                height: 200,
+                width: screen.width,
+                child: Center(child: thrown.last),
+              )
+            : Container(
+                color: Colors.green[200], height: 200, width: screen.width);
+      },
     );
   }
 }

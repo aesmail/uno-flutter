@@ -4,8 +4,9 @@ import 'package:uno/widgets/uno_hand_widget.dart';
 
 class UnoHand {
   List<UnoCard> cards = [];
+  bool isHidden;
 
-  UnoHand({this.cards});
+  UnoHand({this.cards, this.isHidden = false});
 
   UnoCard drawCard(UnoCard card) {
     if (cards.contains(card)) {

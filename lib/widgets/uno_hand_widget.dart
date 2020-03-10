@@ -35,6 +35,7 @@ class _UnoHandWidgetState extends State<UnoHandWidget> {
   List<Widget> _displayCards() {
     _resetValues();
     return _hand.cards.map((card) {
+      card.isHidden = _hand.isHidden;
       var cardWidget = card.toWidget();
       var theCard = Positioned(
         left: _currentSpace,

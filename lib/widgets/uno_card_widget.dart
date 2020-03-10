@@ -5,17 +5,25 @@ class UnoCardWidget extends StatelessWidget {
   const UnoCardWidget({Key key, @required this.card}) : super(key: key);
 
   final UnoCard card;
+  final double cardHeight = 100;
+  final double cardWidth = 75;
+  final double cardFontSize = 55;
+  final double borderWidth = 4.0;
 
   @override
   Widget build(BuildContext context) {
+    return card.isHidden ? backFace() : frontFace();
+  }
+
+  Widget frontFace() {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(10)),
-        border: Border.all(color: Colors.black26, width: 0.5),
+        border: Border.all(color: Colors.white, width: borderWidth),
         color: this.card.color,
       ),
-      height: 150,
-      width: 100,
+      height: cardHeight,
+      width: cardWidth,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -47,7 +55,7 @@ class UnoCardWidget extends StatelessWidget {
                 this.card.symbol,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 90,
+                  fontSize: cardFontSize,
                   // fontWeight: FontWeight.bold,
                   fontFamily: 'RobotoMono',
                   shadows: [
@@ -62,6 +70,19 @@ class UnoCardWidget extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget backFace() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        border: Border.all(color: Colors.white, width: borderWidth),
+        color: Colors.black,
+      ),
+      height: cardHeight,
+      width: cardWidth,
+      child: Container(),
     );
   }
 }

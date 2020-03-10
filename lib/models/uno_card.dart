@@ -5,8 +5,9 @@ class UnoCard {
   final String symbol;
   final int value;
   final Color color;
+  bool isHidden;
 
-  UnoCard({this.symbol, this.color, this.value});
+  UnoCard({this.symbol, this.color, this.value, this.isHidden = false});
 
   Widget toWidget() {
     return UnoCardWidget(card: this);
