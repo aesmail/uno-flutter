@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uno/models/uno_card.dart';
 import 'package:uno/models/uno_hand.dart';
 import 'package:uno/widgets/uno_card_widget.dart';
 
@@ -36,13 +37,12 @@ class _UnoHandWidgetState extends State<UnoHandWidget> {
     _resetValues();
     return _hand.cards.map((card) {
       card.isHidden = _hand.isHidden;
-      var cardWidget = card.toWidget();
       var theCard = Positioned(
         left: _currentSpace,
-        child: Draggable<UnoCardWidget>(
-          data: cardWidget,
-          child: cardWidget,
-          feedback: cardWidget,
+        child: Draggable<UnoCard>(
+          data: card,
+          child: card.toWidget(),
+          feedback: card.toWidget(),
           ignoringFeedbackSemantics: false,
           childWhenDragging: Container(),
         ),

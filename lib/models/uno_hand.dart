@@ -6,7 +6,12 @@ class UnoHand {
   List<UnoCard> cards = [];
   bool isHidden;
 
-  UnoHand({this.cards, this.isHidden = false});
+  UnoHand({this.cards, this.isHidden = false}) {
+    this.cards = this.cards.map((card) {
+      card.hand = this;
+      return card;
+    }).toList();
+  }
 
   UnoCard drawCard(UnoCard card) {
     if (cards.contains(card)) {
