@@ -48,7 +48,7 @@ class UnoCardWidget extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 90,
-                  fontWeight: FontWeight.bold,
+                  // fontWeight: FontWeight.bold,
                   fontFamily: 'RobotoMono',
                   shadows: [
                     Shadow(

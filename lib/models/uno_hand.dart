@@ -17,6 +17,13 @@ class UnoHand {
 
   void addCard(UnoCard card) => cards.add(card);
 
+  void copyHand(UnoHand hand) {
+    emptyHand();
+    cards = hand.cards;
+  }
+
+  void emptyHand() => cards.clear();
+
   Widget toWidget() {
     return UnoHandWidget(hand: this);
   }

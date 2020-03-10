@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:uno/widgets/uno_card_widget.dart';
-import 'package:uno/widgets/uno_deck_widget.dart';
-import 'package:uno/widgets/uno_hand_widget.dart';
-
 import 'models/uno_deck.dart';
 import 'models/uno_hand.dart';
 
@@ -53,8 +50,14 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           children: [
             FlatButton(
-              onPressed: () => print("draw card"),
-              child: Text("Deck Goes Here"),
+              onPressed: () {
+                this.setState(() {
+                  thrown.clear();
+                  deck = UnoDeck();
+                  hand.copyHand(deck.dealHand());
+                });
+              },
+              child: Text("Reset Hand"),
             ),
             DragTarget<UnoCardWidget>(
               onWillAccept: (UnoCardWidget value) {
