@@ -96,4 +96,12 @@ class UnoDeck {
 
     this.shuffle();
   }
+
+  Widget toWidget() {
+    if (cards.isNotEmpty) {
+      return cards.last.toWidget();
+    } else {
+      return Container();
+    }
+  }
 }

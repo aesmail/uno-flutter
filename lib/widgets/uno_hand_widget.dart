@@ -25,7 +25,10 @@ class _UnoHandWidgetState extends State<UnoHandWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Size screen = MediaQuery.of(context).size;
     return Container(
+      width: screen.width / 2,
+      alignment: Alignment.center,
       child: Stack(
         alignment: Alignment.center,
         children: _displayCards(),

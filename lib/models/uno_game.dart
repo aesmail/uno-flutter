@@ -8,13 +8,14 @@ class UnoGame {
   UnoDeck deck;
   int currentTurn;
   List<UnoCard> thrown;
+  int winner = -1;
 
   UnoGame({this.numberOfPlayers = 2});
 
   void prepareGame() {
     deck = UnoDeck();
     hands = List.generate(numberOfPlayers, (index) {
-      return deck.dealHand(isHidden: index == 0);
+      return deck.dealHand(isHidden: false);
     });
     thrown = [deck.drawCard()];
     currentTurn = 0;
@@ -24,14 +25,7 @@ class UnoGame {
 
   bool canPlayCard(UnoCard card) {
     UnoCard lastCard = thrown.last;
-    print(card.symbol);
-    print(lastCard.symbol);
-    print(card.color);
-    print(lastCard.color);
-    if (hands[currentTurn] == card.hand) {
-      return (lastCard.color == card.color) || (lastCard.symbol == card.symbol);
-    }
-    return false;
+    return (hands[currentTurn] == card.hand) && lastCard.isPlayable(card);
   }
 
   bool playCard(UnoCard card) {
@@ -46,6 +40,17 @@ class UnoGame {
   }
 
   void setNextPlayer() {
-    currentTurn = ((currentTurn + 1) % currentTurn).round();
+    currentTurn = ((currentTurn + 1) % numberOfPlayers).round();
+  }
+
+  void drawCardFromDeck() {
+    UnoCard _card = deck.drawCard(hide: false);
+    currentHand().addCard(_card);
+    setNextPlayer();
+  }
+
+  bool isGameOver() {
+    winner = hands.indexWhere((hand) => hand.cards.isEmpty);
+    return winner >= 0;
   }
 }

@@ -40,9 +40,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       body: Center(
         child: Column(
           children: [
@@ -63,19 +60,44 @@ class _MyHomePageState extends State<MyHomePage> {
       },
       onAccept: (UnoCard card) {
         game.playCard(card);
+        game.isGameOver();
         this.setState(() {});
       },
       builder: (context, list1, list2) {
-        return game.thrown.isNotEmpty
-            ? Container(
-                color: Colors.green[200],
-                height: 200,
-                width: screen.width,
-                child: Center(child: game.thrown.last.toWidget()),
-              )
-            : Container(
-                color: Colors.green[200], height: 200, width: screen.width);
+        return Container(
+          color: Colors.blue[900],
+          height: 120,
+          width: screen.width / 2,
+          child: playArea(),
+        );
       },
     );
+  }
+
+  Widget playArea() {
+    if (game.isGameOver()) {
+      return Container(
+        child: Center(
+          child: Text("Game Over!", style: TextStyle(fontSize: 40)),
+        ),
+      );
+    } else {
+      return Row(
+        children: [
+          Expanded(child: Center(child: game.thrown.last.toWidget())),
+          Expanded(
+            child: Center(
+              child: GestureDetector(
+                child: game.deck.toWidget(),
+                onTap: () {
+                  game.drawCardFromDeck();
+                  this.setState(() {});
+                },
+              ),
+            ),
+          ),
+        ],
+      );
+    }
   }
 }

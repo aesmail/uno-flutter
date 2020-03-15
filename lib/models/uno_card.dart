@@ -12,14 +12,14 @@ class UnoCard {
   UnoAction action;
 
   UnoCard(
-      {this.symbol,
-      this.color,
-      this.value,
-      this.action,
-      this.isHidden = false});
+      {this.symbol, this.color, this.value, this.action, this.isHidden = true});
 
   void flipCard() {
     this.isHidden = !this.isHidden;
+  }
+
+  bool isPlayable(UnoCard card) {
+    return (this.symbol == card.symbol) || (this.color == card.color);
   }
 
   Widget toWidget() {

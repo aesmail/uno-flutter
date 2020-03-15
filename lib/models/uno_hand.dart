@@ -21,7 +21,24 @@ class UnoHand {
     return null;
   }
 
-  void addCard(UnoCard card) => cards.add(card);
+  void addCard(UnoCard card) {
+    card.hand = this;
+    card.isHidden = this.isHidden;
+    cards.add(card);
+  }
+
+  List<UnoCard> suitableCards(UnoCard card) {
+    return cards.where((c) => c.isPlayable(card)).toList();
+  }
+
+  UnoCard playCardOrDraw(UnoCard card) {
+    List<UnoCard> suitable = suitableCards(card);
+    if (suitable.length > 0) {
+      suitable.shuffle();
+      return drawCard(suitable.first);
+    }
+    return null;
+  }
 
   void copyHand(UnoHand hand) {
     emptyHand();
