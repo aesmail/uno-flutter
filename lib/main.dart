@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:uno/widgets/uno_card_widget.dart';
 import 'models/uno_card.dart';
-import 'models/uno_deck.dart';
-import 'models/uno_hand.dart';
+import 'models/uno_game.dart';
 
 void main() => runApp(MyApp());
 
@@ -30,17 +28,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  UnoDeck deck;
-  UnoHand hand;
-  UnoHand opponent;
-  List<UnoCardWidget> thrown = [];
+  UnoGame game;
 
   @override
   initState() {
     super.initState();
-    deck = UnoDeck();
-    hand = deck.dealHand();
-    opponent = deck.dealHand(isHidden: true);
+    game = UnoGame();
+    game.prepareGame();
   }
 
   @override
@@ -52,9 +46,9 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Column(
           children: [
-            Expanded(child: opponent.toWidget()),
+            Expanded(child: game.hands[0].toWidget()),
             playTable(context),
-            Expanded(child: hand.toWidget()),
+            Expanded(child: game.hands[1].toWidget()),
           ],
         ),
       ),
@@ -65,28 +59,19 @@ class _MyHomePageState extends State<MyHomePage> {
     Size screen = MediaQuery.of(context).size;
     return DragTarget<UnoCard>(
       onWillAccept: (UnoCard card) {
-        return true;
+        return game.canPlayCard(card);
       },
       onAccept: (UnoCard card) {
-        print("card: ${card.symbol}");
-        card.isHidden = false;
-        UnoHand _currentHand = card.hand;
-        print("Hand isHidden: ${_currentHand.isHidden}");
-        print("isHidden should always be false: ${card.isHidden}");
-        _currentHand.drawCard(card);
-        UnoCardWidget cardWidget = card.toWidget();
-        print("Widget card isHidden: ${cardWidget.card.isHidden}");
-        thrown.add(cardWidget);
-        print("Cards thrown: ${thrown.length}");
+        game.playCard(card);
         this.setState(() {});
       },
       builder: (context, list1, list2) {
-        return thrown.isNotEmpty
+        return game.thrown.isNotEmpty
             ? Container(
                 color: Colors.green[200],
                 height: 200,
                 width: screen.width,
-                child: Center(child: thrown.last),
+                child: Center(child: game.thrown.last.toWidget()),
               )
             : Container(
                 color: Colors.green[200], height: 200, width: screen.width);
