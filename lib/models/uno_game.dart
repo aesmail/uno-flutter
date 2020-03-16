@@ -15,7 +15,7 @@ class UnoGame {
   void prepareGame() {
     deck = UnoDeck();
     hands = List.generate(numberOfPlayers, (index) {
-      return deck.dealHand(isHidden: false);
+      return deck.dealHand(isHidden: index == 0);
     });
     thrown = [deck.drawCard()];
     currentTurn = 0;

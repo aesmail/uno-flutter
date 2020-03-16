@@ -1,18 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:uno/models/uno_action.dart';
 import 'package:uno/models/uno_hand.dart';
 import 'package:uno/widgets/uno_card_widget.dart';
 
+enum CardSymbol {
+  zero,
+  one,
+  two,
+  three,
+  four,
+  five,
+  six,
+  seven,
+  eight,
+  nine,
+  drawTwo,
+  drawFour,
+  skipTurn,
+  changeColor,
+  switchPlay,
+}
+
+enum CardColor {
+  yellow,
+  red,
+  blue,
+  green,
+  colorless,
+}
+
+enum CardAction {
+  none,
+  drawTwo,
+  drawFour,
+  skipTurn,
+  switchPlay,
+  changeColor,
+}
+
 class UnoCard {
-  final String symbol;
-  final int value;
-  final Color color;
+  final CardSymbol symbol;
+  final CardColor color;
+  final CardAction action;
   UnoHand hand;
   bool isHidden;
-  UnoAction action;
 
-  UnoCard(
-      {this.symbol, this.color, this.value, this.action, this.isHidden = true});
+  UnoCard({this.symbol, this.color, this.action, this.isHidden = true});
 
   void flipCard() {
     this.isHidden = !this.isHidden;
@@ -20,6 +52,12 @@ class UnoCard {
 
   bool isPlayable(UnoCard card) {
     return (this.symbol == card.symbol) || (this.color == card.color);
+  }
+
+  String imageName() {
+    String colorName = this.color.toString().split('.').last.toLowerCase();
+    String symbolName = this.symbol.toString().split('.').last.toLowerCase();
+    return "lib/static/images/${colorName}_$symbolName.png";
   }
 
   Widget toWidget() {

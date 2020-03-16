@@ -40,6 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue[300],
       body: Center(
         child: Column(
           children: [
@@ -65,7 +66,10 @@ class _MyHomePageState extends State<MyHomePage> {
       },
       builder: (context, list1, list2) {
         return Container(
-          color: Colors.blue[900],
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            color: Colors.blue[900],
+          ),
           height: 120,
           width: screen.width / 2,
           child: playArea(),

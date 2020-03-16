@@ -2,11 +2,20 @@ import 'package:uno/models/uno_card.dart';
 import 'package:flutter/material.dart';
 import 'package:uno/widgets/uno_hand_widget.dart';
 
+enum Orientation {
+  vertical,
+  horizontal,
+}
+
 class UnoHand {
   List<UnoCard> cards = [];
   bool isHidden;
+  Orientation orientation;
 
-  UnoHand({this.cards, this.isHidden = false}) {
+  UnoHand(
+      {this.cards,
+      this.isHidden = false,
+      this.orientation = Orientation.vertical}) {
     this.cards = this.cards.map((card) {
       card.hand = this;
       return card;
