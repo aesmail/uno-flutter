@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:uno/models/uno_card.dart';
 import 'package:uno/models/uno_deck.dart';
 import 'package:uno/models/uno_hand.dart' as unoHand;
@@ -63,5 +64,23 @@ class UnoGame {
   bool isGameOver() {
     winner = hands.indexWhere((hand) => hand.cards.isEmpty);
     return winner >= 0;
+  }
+
+  void playTurn(var state) {
+    print("Playing turn. Hand: $currentTurn");
+    if (currentTurn > 0) {
+      Random random = Random();
+      int seconds = random.nextInt(3) + 2;
+      Future.delayed(Duration(seconds: seconds), () {
+        UnoCard _card = currentHand().playCardOrDraw(currentCard());
+        if (_card == null) {
+          drawCardFromDeck();
+        } else {
+          playCard(_card);
+        }
+        state.setState(() {});
+        if (!isGameOver()) playTurn(state);
+      });
+    }
   }
 }

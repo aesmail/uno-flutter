@@ -58,11 +58,11 @@ class _UnoHandWidgetState extends State<UnoHandWidget> {
     return _hand.cards.map((card) {
       card.isHidden = _hand.isHidden;
       if (card.hand != null && card.hand.isVertical()) {
-        left = this._hand.game.canPlayCard(card) && !card.isHidden ? 15 : null;
+        left = shouldRaiseCard(card);
         top = _currentSpace;
       } else {
         left = _currentSpace;
-        top = this._hand.game.canPlayCard(card) && !card.isHidden ? 15 : null;
+        top = shouldRaiseCard(card);
       }
       var theCard = Positioned(
         left: left,
@@ -79,6 +79,10 @@ class _UnoHandWidgetState extends State<UnoHandWidget> {
       _currentSpace += _overlap;
       return theCard;
     }).toList();
+  }
+
+  double shouldRaiseCard(UnoCard card) {
+    return this._hand.game.canPlayCard(card) && !card.isHidden ? 15 : null;
   }
 
   void _resetValues(Size screen) {

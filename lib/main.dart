@@ -68,6 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
       onAccept: (UnoCard card) {
         game.playCard(card);
         game.isGameOver();
+        game.playTurn(this);
         this.setState(() {});
       },
       builder: (context, list1, list2) {
@@ -88,7 +89,19 @@ class _MyHomePageState extends State<MyHomePage> {
     if (game.isGameOver()) {
       return Container(
         child: Center(
-          child: Text("Game Over!", style: TextStyle(fontSize: 40)),
+          child: Column(
+            children: [
+              Text("Game Over!", style: TextStyle(fontSize: 30)),
+              FlatButton(
+                child:
+                    Text("Play again", style: TextStyle(color: Colors.white)),
+                onPressed: () {
+                  game.prepareGame();
+                  this.setState(() {});
+                },
+              ),
+            ],
+          ),
         ),
       );
     } else {
@@ -101,6 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: game.deck.toWidget(),
                 onTap: () {
                   game.drawCardFromDeck();
+                  game.playTurn(this);
                   this.setState(() {});
                 },
               ),
