@@ -3,13 +3,16 @@ import 'package:uno/models/uno_card.dart';
 import 'package:uno/models/uno_deck.dart';
 import 'package:uno/models/uno_hand.dart' as unoHand;
 
+enum TurnDirection { clockwise, counterclockwise }
+
 class UnoGame {
   int numberOfPlayers;
   List<unoHand.UnoHand> hands;
   UnoDeck deck;
   int currentTurn;
   List<UnoCard> thrown;
-  int winner = -1;
+  int winner;
+  TurnDirection turnDirection;
 
   UnoGame({this.numberOfPlayers = 4});
 
@@ -24,7 +27,10 @@ class UnoGame {
       return hand;
     });
     thrown = [deck.drawCard()];
-    currentTurn = 0;
+    winner = -1;
+    turnDirection = TurnDirection.clockwise;
+    Random random = Random();
+    currentTurn = random.nextInt(4);
   }
 
   unoHand.UnoHand currentHand() => hands[currentTurn];
@@ -41,10 +47,38 @@ class UnoGame {
       // do not associate this card with its original hand
       card.hand = null;
       thrown.add(card);
+      doCardAction(card);
       setNextPlayer();
       return true;
     }
     return false;
+  }
+
+  void doCardAction(UnoCard card) {
+    switch (card.action) {
+      case CardAction.skipTurn:
+        setNextPlayer();
+        break;
+      case CardAction.switchPlay:
+        switchPlay();
+        break;
+      case CardAction.drawTwo:
+        setNextPlayer();
+        drawCardAction();
+        drawCardAction();
+        break;
+      case CardAction.drawFour:
+        setNextPlayer();
+        drawCardAction();
+        drawCardAction();
+        drawCardAction();
+        drawCardAction();
+        break;
+      case CardAction.changeColor:
+        break;
+      case CardAction.none:
+        break;
+    }
   }
 
   UnoCard currentCard() {
@@ -52,12 +86,28 @@ class UnoGame {
   }
 
   void setNextPlayer() {
-    currentTurn = ((currentTurn + 1) % numberOfPlayers).round();
+    if (turnDirection == TurnDirection.clockwise) {
+      currentTurn = ((currentTurn + 1) % numberOfPlayers).round();
+    } else {
+      currentTurn = ((currentTurn - 1) % numberOfPlayers).round();
+    }
+  }
+
+  void switchPlay() {
+    if (turnDirection == TurnDirection.clockwise) {
+      turnDirection = TurnDirection.counterclockwise;
+    } else {
+      turnDirection = TurnDirection.clockwise;
+    }
+  }
+
+  void drawCardAction() {
+    UnoCard _card = deck.drawCard(hide: false);
+    currentHand().addCard(_card);
   }
 
   void drawCardFromDeck() {
-    UnoCard _card = deck.drawCard(hide: false);
-    currentHand().addCard(_card);
+    drawCardAction();
     setNextPlayer();
   }
 

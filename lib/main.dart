@@ -33,8 +33,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   initState() {
     super.initState();
+    initGame();
+  }
+
+  void initGame() {
     game = UnoGame();
     game.prepareGame();
+    game.playTurn(this);
   }
 
   @override
@@ -96,8 +101,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 child:
                     Text("Play again", style: TextStyle(color: Colors.white)),
                 onPressed: () {
-                  game.prepareGame();
-                  this.setState(() {});
+                  this.setState(() {
+                    initGame();
+                  });
                 },
               ),
             ],
