@@ -68,19 +68,21 @@ class UnoGame {
 
   void playTurn(var state) {
     print("Playing turn. Hand: $currentTurn");
-    if (currentTurn > 0) {
-      Random random = Random();
-      int seconds = random.nextInt(3) + 2;
-      Future.delayed(Duration(seconds: seconds), () {
-        UnoCard _card = currentHand().playCardOrDraw(currentCard());
-        if (_card == null) {
-          drawCardFromDeck();
-        } else {
-          playCard(_card);
-        }
-        state.setState(() {});
-        if (!isGameOver()) playTurn(state);
-      });
+    if (!isGameOver()) {
+      if (currentTurn > 0) {
+        Random random = Random();
+        int seconds = random.nextInt(3) + 2;
+        Future.delayed(Duration(seconds: seconds), () {
+          UnoCard _card = currentHand().playCardOrDraw(currentCard());
+          if (_card == null) {
+            drawCardFromDeck();
+          } else {
+            playCard(_card);
+          }
+          state.setState(() {});
+          playTurn(state);
+        });
+      }
     }
   }
 }
