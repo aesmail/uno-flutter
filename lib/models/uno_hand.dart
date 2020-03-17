@@ -1,5 +1,6 @@
 import 'package:uno/models/uno_card.dart';
 import 'package:flutter/material.dart';
+import 'package:uno/models/uno_game.dart';
 import 'package:uno/widgets/uno_hand_widget.dart';
 
 enum Orientation {
@@ -11,6 +12,7 @@ class UnoHand {
   List<UnoCard> cards = [];
   bool isHidden;
   Orientation orientation;
+  UnoGame game;
 
   UnoHand(
       {this.cards,

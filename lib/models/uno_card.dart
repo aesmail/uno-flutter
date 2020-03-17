@@ -51,7 +51,9 @@ class UnoCard {
   }
 
   bool isPlayable(UnoCard card) {
-    return (this.symbol == card.symbol) || (this.color == card.color);
+    return (card.color == CardColor.colorless) ||
+        (this.symbol == card.symbol) ||
+        (this.color == card.color);
   }
 
   String imageName() {

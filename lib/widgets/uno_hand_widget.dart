@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:uno/models/uno_card.dart';
 import 'package:uno/models/uno_hand.dart' as unoHand;
@@ -41,6 +43,7 @@ class _UnoHandWidgetState extends State<UnoHandWidget> {
       card.isHidden = _hand.isHidden;
       var theCard = Positioned(
         left: _currentSpace,
+        top: this._hand.game.canPlayCard(card) ? 15 : null,
         child: Draggable<UnoCard>(
           data: card,
           child: card.toWidget(),

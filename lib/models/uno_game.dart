@@ -15,16 +15,18 @@ class UnoGame {
   void prepareGame() {
     deck = UnoDeck();
     hands = List.generate(numberOfPlayers, (index) {
-      return deck.dealHand(isHidden: index == 0);
+      UnoHand hand = deck.dealHand(isHidden: index == 0);
+      hand.game = this;
+      return hand;
     });
     thrown = [deck.drawCard()];
-    currentTurn = 0;
+    currentTurn = 1;
   }
 
   UnoHand currentHand() => hands[currentTurn];
 
   bool canPlayCard(UnoCard card) {
-    UnoCard lastCard = thrown.last;
+    UnoCard lastCard = currentCard();
     return (hands[currentTurn] == card.hand) && lastCard.isPlayable(card);
   }
 
@@ -37,6 +39,10 @@ class UnoGame {
       return true;
     }
     return false;
+  }
+
+  UnoCard currentCard() {
+    return thrown.last;
   }
 
   void setNextPlayer() {
