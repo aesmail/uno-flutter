@@ -25,15 +25,31 @@ class _UnoHandWidgetState extends State<UnoHandWidget> {
   @override
   Widget build(BuildContext context) {
     Size screen = MediaQuery.of(context).size;
-    return Container(
-      width: getHandWidth(screen),
-      height: getHandHeight(screen),
-      alignment: Alignment.center,
-      child: Stack(
+    if (this._hand == this._hand.game.currentHand()) {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          border: Border.all(color: Colors.white, width: 2.0),
+        ),
+        width: getHandWidth(screen),
+        height: getHandHeight(screen),
         alignment: Alignment.center,
-        children: _displayCards(screen),
-      ),
-    );
+        child: Stack(
+          alignment: Alignment.center,
+          children: _displayCards(screen),
+        ),
+      );
+    } else {
+      return Container(
+        width: getHandWidth(screen),
+        height: getHandHeight(screen),
+        alignment: Alignment.center,
+        child: Stack(
+          alignment: Alignment.center,
+          children: _displayCards(screen),
+        ),
+      );
+    }
   }
 
   List<Widget> _displayCards(Size screen) {
@@ -42,11 +58,11 @@ class _UnoHandWidgetState extends State<UnoHandWidget> {
     return _hand.cards.map((card) {
       card.isHidden = _hand.isHidden;
       if (card.hand != null && card.hand.isVertical()) {
-        left = this._hand.game.canPlayCard(card) ? 15 : null;
+        left = this._hand.game.canPlayCard(card) && !card.isHidden ? 15 : null;
         top = _currentSpace;
       } else {
         left = _currentSpace;
-        top = this._hand.game.canPlayCard(card) ? 15 : null;
+        top = this._hand.game.canPlayCard(card) && !card.isHidden ? 15 : null;
       }
       var theCard = Positioned(
         left: left,

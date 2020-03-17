@@ -37,6 +37,8 @@ class UnoGame {
     if (canPlayCard(card)) {
       card.hand.drawCard(card);
       card.isHidden = false;
+      // do not associate this card with its original hand
+      card.hand = null;
       thrown.add(card);
       setNextPlayer();
       return true;
