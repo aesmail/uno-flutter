@@ -7,8 +7,6 @@ class UnoCardWidget extends StatelessWidget {
   final UnoCard card;
   final double cardHeight = 100;
   final double cardWidth = 75;
-  final double cardFontSize = 55;
-  final double borderWidth = 4.0;
 
   @override
   Widget build(BuildContext context) {

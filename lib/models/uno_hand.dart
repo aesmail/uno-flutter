@@ -15,7 +15,7 @@ class UnoHand {
   UnoHand(
       {this.cards,
       this.isHidden = false,
-      this.orientation = Orientation.vertical}) {
+      this.orientation = Orientation.horizontal}) {
     this.cards = this.cards.map((card) {
       card.hand = this;
       return card;
