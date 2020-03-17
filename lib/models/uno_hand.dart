@@ -51,6 +51,14 @@ class UnoHand {
     return null;
   }
 
+  bool isHorizontal() {
+    return orientation == Orientation.horizontal;
+  }
+
+  bool isVertical() {
+    return !isHorizontal();
+  }
+
   void copyHand(UnoHand hand) {
     emptyHand();
     cards = hand.cards;

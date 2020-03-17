@@ -1,29 +1,32 @@
 import 'package:uno/models/uno_card.dart';
 import 'package:uno/models/uno_deck.dart';
-import 'package:uno/models/uno_hand.dart';
+import 'package:uno/models/uno_hand.dart' as unoHand;
 
 class UnoGame {
   int numberOfPlayers;
-  List<UnoHand> hands;
+  List<unoHand.UnoHand> hands;
   UnoDeck deck;
   int currentTurn;
   List<UnoCard> thrown;
   int winner = -1;
 
-  UnoGame({this.numberOfPlayers = 2});
+  UnoGame({this.numberOfPlayers = 4});
 
   void prepareGame() {
     deck = UnoDeck();
     hands = List.generate(numberOfPlayers, (index) {
-      UnoHand hand = deck.dealHand(isHidden: index == 0);
+      bool hidden = index != 0;
+      bool isHorizontal = index == 0 || index == 2;
+      unoHand.UnoHand hand =
+          deck.dealHand(isHidden: hidden, isHorizontal: isHorizontal);
       hand.game = this;
       return hand;
     });
     thrown = [deck.drawCard()];
-    currentTurn = 1;
+    currentTurn = 0;
   }
 
-  UnoHand currentHand() => hands[currentTurn];
+  unoHand.UnoHand currentHand() => hands[currentTurn];
 
   bool canPlayCard(UnoCard card) {
     UnoCard lastCard = currentCard();

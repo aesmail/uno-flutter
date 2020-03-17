@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:uno/models/uno_action.dart';
+// import 'package:uno/models/uno_action.dart';
 import 'package:uno/models/uno_card.dart';
-import 'package:uno/models/uno_hand.dart';
+import 'package:uno/models/uno_hand.dart' as unoHand;
 
 class UnoDeck {
   List<UnoCard> cards = [];
@@ -14,11 +14,16 @@ class UnoDeck {
 
   void shuffle() => cards.shuffle();
 
-  UnoHand dealHand({int cardCount = 7, bool isHidden = false}) {
+  unoHand.UnoHand dealHand(
+      {int cardCount = 7, bool isHidden = false, bool isHorizontal = true}) {
     if (cards.length > cardCount) {
       List<UnoCard> _hand = cards.sublist(0, cardCount);
       cards.removeRange(0, cardCount);
-      return UnoHand(cards: _hand, isHidden: isHidden);
+      var orientation = isHorizontal
+          ? unoHand.Orientation.horizontal
+          : unoHand.Orientation.vertical;
+      return unoHand.UnoHand(
+          cards: _hand, isHidden: isHidden, orientation: orientation);
     }
     return null;
   }

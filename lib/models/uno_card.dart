@@ -51,7 +51,9 @@ class UnoCard {
   }
 
   bool isPlayable(UnoCard card) {
-    return (card.color == CardColor.colorless) ||
+    return (this.symbol == CardSymbol.changeColor) ||
+        (this.symbol == CardSymbol.drawFour) ||
+        (card.color == CardColor.colorless) ||
         (this.symbol == card.symbol) ||
         (this.color == card.color);
   }

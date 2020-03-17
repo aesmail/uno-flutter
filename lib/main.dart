@@ -39,14 +39,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    Color myBlue = Colors.blue[300];
     return Scaffold(
-      backgroundColor: Colors.blue[300],
+      backgroundColor: myBlue,
       body: Center(
-        child: Column(
+        child: Row(
           children: [
-            Expanded(child: game.hands[0].toWidget()),
-            playTable(context),
             Expanded(child: game.hands[1].toWidget()),
+            Column(
+              children: [
+                Expanded(child: game.hands[2].toWidget()),
+                playTable(context),
+                Expanded(child: game.hands[0].toWidget()),
+              ],
+            ),
+            Expanded(child: game.hands[3].toWidget()),
           ],
         ),
       ),
