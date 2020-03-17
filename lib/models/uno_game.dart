@@ -1,18 +1,19 @@
 import 'dart:math';
 import 'package:uno/models/uno_card.dart';
 import 'package:uno/models/uno_deck.dart';
-import 'package:uno/models/uno_hand.dart' as unoHand;
+import 'package:uno/models/uno_hand.dart';
 
 enum TurnDirection { clockwise, counterclockwise }
 
 class UnoGame {
   int numberOfPlayers;
-  List<unoHand.UnoHand> hands;
+  List<UnoHand> hands;
   UnoDeck deck;
   int currentTurn;
   List<UnoCard> thrown;
   int winner;
   TurnDirection turnDirection;
+  CardColor currentColor;
 
   UnoGame({this.numberOfPlayers = 4});
 
@@ -21,19 +22,21 @@ class UnoGame {
     hands = List.generate(numberOfPlayers, (index) {
       bool hidden = index != 0;
       bool isHorizontal = index == 0 || index == 2;
-      unoHand.UnoHand hand =
+      UnoHand hand =
           deck.dealHand(isHidden: hidden, isHorizontal: isHorizontal);
       hand.game = this;
       return hand;
     });
-    thrown = [deck.drawCard()];
+    UnoCard firstCard = deck.drawCard();
+    currentColor = firstCard.color;
+    thrown = [firstCard];
     winner = -1;
     turnDirection = TurnDirection.clockwise;
     Random random = Random();
     currentTurn = random.nextInt(4);
   }
 
-  unoHand.UnoHand currentHand() => hands[currentTurn];
+  UnoHand currentHand() => hands[currentTurn];
 
   bool canPlayCard(UnoCard card) {
     UnoCard lastCard = currentCard();
@@ -47,11 +50,20 @@ class UnoGame {
       // do not associate this card with its original hand
       card.hand = null;
       thrown.add(card);
+      setColor(card.color);
       doCardAction(card);
       setNextPlayer();
       return true;
     }
     return false;
+  }
+
+  void setColor(CardColor color) {
+    currentColor = color;
+  }
+
+  bool needsColorDecision() {
+    return currentColor == CardColor.colorless;
   }
 
   void doCardAction(UnoCard card) {

@@ -73,8 +73,11 @@ class _MyHomePageState extends State<MyHomePage> {
       onAccept: (UnoCard card) {
         game.playCard(card);
         game.isGameOver();
-        game.playTurn(this);
-        this.setState(() {});
+        if (game.needsColorDecision()) {
+        } else {
+          game.playTurn(this);
+          this.setState(() {});
+        }
       },
       builder: (context, list1, list2) {
         return Container(
@@ -113,17 +116,60 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       return Row(
         children: [
-          Expanded(child: Center(child: game.thrown.last.toWidget())),
+          Expanded(child: Center(child: game.currentCard().toWidget())),
           Expanded(
             child: Center(
-              child: GestureDetector(
-                child: game.deck.toWidget(),
-                onTap: () {
-                  game.drawCardFromDeck();
-                  game.playTurn(this);
-                  this.setState(() {});
-                },
-              ),
+              child: game.needsColorDecision()
+                  ? Container(
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              FlatButton(
+                                  color: Colors.green,
+                                  child: Text("Green"),
+                                  onPressed: () {
+                                    game.setColor(CardColor.green);
+                                    this.setState(() {});
+                                  }),
+                              FlatButton(
+                                  color: Colors.red,
+                                  child: Text("Red"),
+                                  onPressed: () {
+                                    game.setColor(CardColor.red);
+                                    this.setState(() {});
+                                  }),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              FlatButton(
+                                  color: Colors.blue,
+                                  child: Text("blue"),
+                                  onPressed: () {
+                                    game.setColor(CardColor.blue);
+                                    this.setState(() {});
+                                  }),
+                              FlatButton(
+                                  color: Colors.yellow,
+                                  child: Text("Yellow"),
+                                  onPressed: () {
+                                    game.setColor(CardColor.yellow);
+                                    this.setState(() {});
+                                  }),
+                            ],
+                          )
+                        ],
+                      ),
+                    )
+                  : GestureDetector(
+                      child: game.deck.toWidget(),
+                      onTap: () {
+                        game.drawCardFromDeck();
+                        game.playTurn(this);
+                        this.setState(() {});
+                      },
+                    ),
             ),
           ),
         ],
