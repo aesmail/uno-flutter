@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uno/models/uno_game.dart';
 import 'package:uno/models/uno_hand.dart';
 import 'package:uno/widgets/uno_card_widget.dart';
 
@@ -42,6 +43,7 @@ class UnoCard {
   final CardColor color;
   final CardAction action;
   UnoHand hand;
+  UnoGame game;
   bool isHidden;
 
   UnoCard({this.symbol, this.color, this.action, this.isHidden = true});
@@ -51,11 +53,18 @@ class UnoCard {
   }
 
   bool isPlayable(UnoCard card) {
-    return (this.symbol == CardSymbol.changeColor) ||
-        (this.symbol == CardSymbol.drawFour) ||
-        (card.color == CardColor.colorless) ||
-        (this.symbol == card.symbol) ||
-        (this.color == card.color);
+    if (this.symbol == CardSymbol.changeColor) return true;
+    if (this.symbol == CardSymbol.drawFour) {
+      return (this.color == this.game.currentColor) ||
+          (this.color == CardColor.colorless);
+    }
+    return (this.color == card.color || this.symbol == card.symbol);
+  }
+
+  bool canAccept(UnoCard card) {
+    if (card.symbol == CardSymbol.changeColor) return true;
+    if (card.symbol == CardSymbol.drawFour) return true;
+    return (card.color == this.color) || (card.symbol == this.symbol);
   }
 
   String imageName() {

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:uno/models/uno_card.dart';
-import 'package:uno/models/uno_hand.dart' as unoHand;
+import 'package:uno/models/uno_hand.dart';
 
 class UnoHandWidget extends StatefulWidget {
   UnoHandWidget({Key key, this.hand}) : super(key: key);
 
-  final unoHand.UnoHand hand;
+  final UnoHand hand;
 
   @override
   _UnoHandWidgetState createState() => _UnoHandWidgetState();
@@ -14,7 +14,7 @@ class UnoHandWidget extends StatefulWidget {
 class _UnoHandWidgetState extends State<UnoHandWidget> {
   double _overlap;
   double _currentSpace;
-  unoHand.UnoHand _hand;
+  UnoHand _hand;
 
   @override
   initState() {
@@ -95,14 +95,14 @@ class _UnoHandWidgetState extends State<UnoHandWidget> {
   }
 
   double getHandWidth(screen) {
-    if (_hand.orientation == unoHand.Orientation.horizontal) {
+    if (_hand.orientation == HandOrientation.horizontal) {
       return screen.width / 2;
     }
     return null;
   }
 
   double getHandHeight(screen) {
-    if (_hand.orientation == unoHand.Orientation.vertical) {
+    if (_hand.orientation == HandOrientation.vertical) {
       return screen.height / 2;
     }
     return null;

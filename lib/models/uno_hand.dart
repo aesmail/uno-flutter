@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:uno/models/uno_game.dart';
 import 'package:uno/widgets/uno_hand_widget.dart';
 
-enum Orientation {
+enum HandOrientation {
   vertical,
   horizontal,
 }
@@ -11,13 +11,14 @@ enum Orientation {
 class UnoHand {
   List<UnoCard> cards = [];
   bool isHidden;
-  Orientation orientation;
+  HandOrientation orientation;
   UnoGame game;
 
   UnoHand(
       {this.cards,
+      this.game,
       this.isHidden = false,
-      this.orientation = Orientation.horizontal}) {
+      this.orientation = HandOrientation.horizontal}) {
     this.cards = this.cards.map((card) {
       card.hand = this;
       return card;
@@ -52,7 +53,7 @@ class UnoHand {
   }
 
   bool isHorizontal() {
-    return orientation == Orientation.horizontal;
+    return orientation == HandOrientation.horizontal;
   }
 
   bool isVertical() {

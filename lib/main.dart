@@ -83,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
         return Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(10.0)),
-            color: Colors.blue[900],
+            color: game.getPlayingColor(),
           ),
           height: 120,
           width: screen.width / 2,
@@ -121,42 +121,21 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Center(
               child: game.needsColorDecision()
                   ? Container(
+                      alignment: Alignment.center,
                       child: Column(
                         children: [
                           Row(
                             children: [
-                              FlatButton(
-                                  color: Colors.green,
-                                  child: Text("Green"),
-                                  onPressed: () {
-                                    game.setColor(CardColor.green);
-                                    this.setState(() {});
-                                  }),
-                              FlatButton(
-                                  color: Colors.red,
-                                  child: Text("Red"),
-                                  onPressed: () {
-                                    game.setColor(CardColor.red);
-                                    this.setState(() {});
-                                  }),
+                              colorChoice(
+                                  "Green", Colors.green, CardColor.green),
+                              colorChoice("Red", Colors.red, CardColor.red),
                             ],
                           ),
                           Row(
                             children: [
-                              FlatButton(
-                                  color: Colors.blue,
-                                  child: Text("blue"),
-                                  onPressed: () {
-                                    game.setColor(CardColor.blue);
-                                    this.setState(() {});
-                                  }),
-                              FlatButton(
-                                  color: Colors.yellow,
-                                  child: Text("Yellow"),
-                                  onPressed: () {
-                                    game.setColor(CardColor.yellow);
-                                    this.setState(() {});
-                                  }),
+                              colorChoice("Blue", Colors.blue, CardColor.blue),
+                              colorChoice(
+                                  "Yellow", Colors.yellow, CardColor.yellow),
                             ],
                           )
                         ],
@@ -175,5 +154,20 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       );
     }
+  }
+
+  Widget colorChoice(String title, Color color, CardColor cardColor) {
+    return SizedBox(
+      width: 75,
+      child: FlatButton(
+        color: color,
+        child: Text(title),
+        onPressed: () {
+          game.setColor(cardColor);
+          game.playTurn(this);
+          this.setState(() {});
+        },
+      ),
+    );
   }
 }

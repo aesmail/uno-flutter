@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-// import 'package:uno/models/uno_action.dart';
 import 'package:uno/models/uno_card.dart';
-import 'package:uno/models/uno_hand.dart' as unoHand;
+import 'package:uno/models/uno_game.dart';
+import 'package:uno/models/uno_hand.dart';
 
 class UnoDeck {
   List<UnoCard> cards = [];
+  UnoGame game;
 
   UnoCard drawCard({bool hide = false}) {
     UnoCard _card = cards.removeLast();
@@ -12,18 +13,32 @@ class UnoDeck {
     return _card;
   }
 
+  void setGame(UnoGame theGame) {
+    this.game = theGame;
+    cards = cards.map((c) {
+      c.game = this.game;
+      return c;
+    }).toList();
+  }
+
   void shuffle() => cards.shuffle();
 
-  unoHand.UnoHand dealHand(
+  UnoHand dealHand(
       {int cardCount = 7, bool isHidden = false, bool isHorizontal = true}) {
     if (cards.length > cardCount) {
       List<UnoCard> _hand = cards.sublist(0, cardCount);
+      _hand = _hand.map((c) {
+        c.game = this.game;
+        return c;
+      }).toList();
       cards.removeRange(0, cardCount);
-      var orientation = isHorizontal
-          ? unoHand.Orientation.horizontal
-          : unoHand.Orientation.vertical;
-      return unoHand.UnoHand(
-          cards: _hand, isHidden: isHidden, orientation: orientation);
+      var orientation =
+          isHorizontal ? HandOrientation.horizontal : HandOrientation.vertical;
+      return UnoHand(
+          cards: _hand,
+          isHidden: isHidden,
+          orientation: orientation,
+          game: game);
     }
     return null;
   }
