@@ -42,7 +42,7 @@ class UnoHand {
   }
 
   List<UnoCard> suitableCards(UnoCard card) {
-    return cards.where((c) => c.isPlayable(card)).toList();
+    return cards.where((c) => card.canAccept(c)).toList();
   }
 
   CardColor getMostColor() {
