@@ -15,45 +15,62 @@ class _UnoHandWidgetState extends State<UnoHandWidget> {
   double _overlap;
   double _currentSpace;
   UnoHand _hand;
+  Size screen;
+  // AnimationController _handAnimation;
+  // double _handScale;
 
   @override
   initState() {
     super.initState();
     _hand = this.widget.hand;
+    // _handScale = 0.65;
+    // _handAnimation = AnimationController(
+    //   vsync: this,
+    //   lowerBound: 0.65,
+    //   upperBound: 1.0,
+    //   duration: Duration(milliseconds: 500),
+    // );
+    // _handAnimation.addListener(() {
+    //   this.setState(() {
+    //     _handScale = _handAnimation.value;
+    //   });
+    // });
   }
+
+  // @override
+  // void dispose() {
+  //   _handAnimation.reverse();
+  //   _handAnimation.dispose();
+  //   super.dispose();
+  // }
+
+  // void getHandScale() {
+  //   if (this._hand == this._hand.game.currentHand()) {
+  //     _handAnimation.forward(from: 0.65);
+  //   } else {
+  //     if (_handAnimation.isCompleted) _handAnimation.reverse();
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    Size screen = MediaQuery.of(context).size;
-    if (this._hand == this._hand.game.currentHand()) {
-      return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          border: Border.all(color: Colors.white, width: 2.0),
-        ),
-        width: getHandWidth(screen),
-        height: getHandHeight(screen),
+    screen = MediaQuery.of(context).size;
+    return Transform.scale(
+      scale: this._hand == this._hand.game.currentHand() ? 0.9 : 0.75,
+      child: Container(
+        width: getHandWidth(),
+        height: getHandHeight(),
         alignment: Alignment.center,
         child: Stack(
           alignment: Alignment.center,
-          children: _displayCards(screen),
+          children: _displayCards(),
         ),
-      );
-    } else {
-      return Container(
-        width: getHandWidth(screen),
-        height: getHandHeight(screen),
-        alignment: Alignment.center,
-        child: Stack(
-          alignment: Alignment.center,
-          children: _displayCards(screen),
-        ),
-      );
-    }
+      ),
+    );
   }
 
-  List<Widget> _displayCards(Size screen) {
-    _resetValues(screen);
+  List<Widget> _displayCards() {
+    _resetValues();
     double top, left;
     return _hand.cards.map((card) {
       card.isHidden = _hand.isHidden;
@@ -85,26 +102,29 @@ class _UnoHandWidgetState extends State<UnoHandWidget> {
     return card.game.canPlayCard(card) && !card.isHidden ? 15 : null;
   }
 
-  void _resetValues(Size screen) {
+  void _resetValues() {
     int numberOfCards = _hand.cards.length;
     _currentSpace = 1;
-    double handWidth = getHandWidth(screen) == null
-        ? getHandHeight(screen)
-        : getHandWidth(screen);
+    double handWidth = _hand.orientation == HandOrientation.vertical
+        ? getHandHeight()
+        : getHandWidth();
     _overlap = (handWidth - 75) / numberOfCards;
+    if (_overlap > 75) _overlap = 75;
   }
 
-  double getHandWidth(screen) {
+  double getHandWidth() {
     if (_hand.orientation == HandOrientation.horizontal) {
-      return screen.width / 2;
+      return screen.width > (525 + 150 + 150) ? 525.0 : screen.width / 2;
+    } else {
+      return 150.0;
     }
-    return null;
   }
 
-  double getHandHeight(screen) {
+  double getHandHeight() {
     if (_hand.orientation == HandOrientation.vertical) {
-      return screen.height / 2;
+      return 420.0;
+    } else {
+      return 140.0;
     }
-    return null;
   }
 }

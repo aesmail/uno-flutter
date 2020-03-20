@@ -23,7 +23,7 @@ class UnoGame {
     deck.setGame(this);
     hands = List.generate(numberOfPlayers, (index) {
       bool hidden = index != 0;
-      String name = hidden ? "AI $index" : "Human";
+      String name = hidden ? "AI$index" : "Human";
       bool isHorizontal = index == 0 || index == 2;
       UnoHand hand = deck.dealHand(
           name: name, isHidden: hidden, isHorizontal: isHorizontal);

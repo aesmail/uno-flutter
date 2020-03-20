@@ -32,19 +32,33 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blue[300],
-      body: Center(
-        child: Row(
-          children: [
-            Expanded(child: game.hands[1].toWidget()),
-            Column(
-              children: [
-                Expanded(child: game.hands[2].toWidget()),
-                playTable(context),
-                Expanded(child: game.hands[0].toWidget()),
-              ],
-            ),
-            Expanded(child: game.hands[3].toWidget()),
-          ],
+      body: Padding(
+        padding: const EdgeInsets.only(top: 5.0),
+        child: Container(
+          height: 460,
+          width: 880,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                alignment: Alignment.topCenter,
+                // color: Colors.brown,
+                child: game.hands[1].toWidget(),
+              ),
+              Column(
+                children: [
+                  game.hands[2].toWidget(),
+                  playTable(context),
+                  game.hands[0].toWidget(),
+                ],
+              ),
+              Container(
+                alignment: Alignment.topCenter,
+                // color: Colors.cyan,
+                child: game.hands[3].toWidget(),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -69,7 +83,7 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
             color: game.getPlayingColor(),
           ),
           height: 120,
-          width: screen.width / 2,
+          width: screen.width > (525 + 150 + 150) ? 525.0 : screen.width / 2,
           child: playArea(),
         );
       },
@@ -98,7 +112,11 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
     } else {
       return Row(
         children: [
-          Expanded(child: Center(child: game.currentCard().toWidget())),
+          Expanded(
+            child: Center(
+              child: game.currentCard().toWidget(),
+            ),
+          ),
           Expanded(
             child: Center(
               child: game.needsColorDecision()
