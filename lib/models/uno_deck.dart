@@ -24,7 +24,10 @@ class UnoDeck {
   void shuffle() => cards.shuffle();
 
   UnoHand dealHand(
-      {int cardCount = 7, bool isHidden = false, bool isHorizontal = true}) {
+      {String name = "",
+      int cardCount = 7,
+      bool isHidden = false,
+      bool isHorizontal = true}) {
     if (cards.length > cardCount) {
       List<UnoCard> _hand = cards.sublist(0, cardCount);
       _hand = _hand.map((c) {
@@ -35,6 +38,7 @@ class UnoDeck {
       var orientation =
           isHorizontal ? HandOrientation.horizontal : HandOrientation.vertical;
       return UnoHand(
+          name: name,
           cards: _hand,
           isHidden: isHidden,
           orientation: orientation,

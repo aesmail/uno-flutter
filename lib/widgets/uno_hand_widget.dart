@@ -82,7 +82,7 @@ class _UnoHandWidgetState extends State<UnoHandWidget> {
   }
 
   double shouldRaiseCard(UnoCard card) {
-    return this._hand.game.canPlayCard(card) && !card.isHidden ? 15 : null;
+    return card.game.canPlayCard(card) && !card.isHidden ? 15 : null;
   }
 
   void _resetValues(Size screen) {

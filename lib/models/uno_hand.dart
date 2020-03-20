@@ -13,11 +13,13 @@ class UnoHand {
   bool isHidden;
   HandOrientation orientation;
   UnoGame game;
+  String name;
 
   UnoHand(
       {this.cards,
       this.game,
       this.isHidden = false,
+      this.name = "Computer",
       this.orientation = HandOrientation.horizontal}) {
     this.cards = this.cards.map((card) {
       card.hand = this;
@@ -41,6 +43,25 @@ class UnoHand {
 
   List<UnoCard> suitableCards(UnoCard card) {
     return cards.where((c) => c.isPlayable(card)).toList();
+  }
+
+  CardColor getMostColor() {
+    var _colors = Map();
+    cards.forEach((c) {
+      _colors[c.color] =
+          !_colors.containsKey(c.color) ? 1 : (_colors[c.color] + 1);
+    });
+    var _actualColors = _colors.keys.toList();
+    var _suitableColors =
+        _actualColors.where((c) => c != CardColor.colorless).toList();
+    if (_suitableColors.length > 0) {
+      _suitableColors.shuffle();
+      return _suitableColors.first;
+    } else {
+      var _allColors = CardColor.values;
+      _allColors.shuffle();
+      return _allColors.first;
+    }
   }
 
   UnoCard playCardOrDraw(UnoCard card) {

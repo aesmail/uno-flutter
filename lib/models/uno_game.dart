@@ -23,9 +23,10 @@ class UnoGame {
     deck.setGame(this);
     hands = List.generate(numberOfPlayers, (index) {
       bool hidden = index != 0;
+      String name = hidden ? "AI $index" : "Human";
       bool isHorizontal = index == 0 || index == 2;
-      UnoHand hand =
-          deck.dealHand(isHidden: hidden, isHorizontal: isHorizontal);
+      UnoHand hand = deck.dealHand(
+          name: name, isHidden: hidden, isHorizontal: isHorizontal);
       hand.game = this;
       return hand;
     });
@@ -36,6 +37,7 @@ class UnoGame {
     winner = -1;
     turnDirection = TurnDirection.clockwise;
     // Random random = Random();
+    print("Initial card: ${firstCard.symbol}:${firstCard.color}");
     currentTurn = 0;
   }
 
@@ -44,25 +46,26 @@ class UnoGame {
   Color getPlayingColor() {
     switch (currentColor) {
       case CardColor.blue:
-        return Colors.blue[900];
+        return Colors.blue[600];
       case CardColor.red:
-        return Colors.red[900];
+        return Colors.red[600];
       case CardColor.green:
-        return Colors.green[900];
+        return Colors.green[600];
       case CardColor.yellow:
-        return Colors.yellow[900];
+        return Colors.yellow[600];
       case CardColor.colorless:
-        return Colors.white;
+        return Colors.black;
     }
     return Colors.white;
   }
 
   bool canPlayCard(UnoCard card) {
     UnoCard lastCard = currentCard();
-    return (hands[currentTurn] == card.hand) && lastCard.canAccept(card);
+    return (currentHand() == card.hand) && lastCard.canAccept(card);
   }
 
   bool playCard(UnoCard card) {
+    print("${card.hand.name}: ${card.symbol}:${card.color}");
     if (canPlayCard(card)) {
       card.hand.drawCard(card);
       card.isHidden = false;
@@ -70,9 +73,7 @@ class UnoGame {
       card.game = this;
       thrown.add(card);
       setColor(card.color);
-      doCardAction(card);
-      setNextPlayer();
-      return true;
+      return doCardAction(card);
     }
     return false;
   }
@@ -85,43 +86,75 @@ class UnoGame {
     return currentColor == CardColor.colorless;
   }
 
-  void doCardAction(UnoCard card) {
+  bool doCardAction(UnoCard card) {
     switch (card.action) {
       case CardAction.skipTurn:
-        setNextPlayer();
-        break;
+        setNextPlayer(skip: 2);
+        return true;
       case CardAction.switchPlay:
         switchPlay();
-        break;
+        setNextPlayer();
+        return true;
       case CardAction.drawTwo:
         setNextPlayer();
         drawCardAction();
         drawCardAction();
-        break;
-      case CardAction.drawFour:
         setNextPlayer();
-        drawCardAction();
-        drawCardAction();
-        drawCardAction();
-        drawCardAction();
-        break;
+        return true;
+      case CardAction.drawFour:
+        if (this.isHumanTurn()) {
+          print("Human must choose color.");
+          setNextPlayer();
+          drawCardAction();
+          drawCardAction();
+          drawCardAction();
+          drawCardAction();
+          setNextPlayer();
+          return false;
+        } else {
+          var _color = currentHand().getMostColor();
+          print("Choosing color: $_color");
+          this.setColor(_color);
+          setNextPlayer();
+          drawCardAction();
+          drawCardAction();
+          drawCardAction();
+          drawCardAction();
+          setNextPlayer();
+        }
+        print("AI chose color.");
+        return true;
       case CardAction.changeColor:
-        break;
+        if (this.isHumanTurn()) {
+          print("Human must choose color.");
+          setNextPlayer();
+          return false;
+        } else {
+          var _color = currentHand().getMostColor();
+          print("Choosing color: $_color");
+          setNextPlayer();
+          this.setColor(_color);
+        }
+        print("AI chose color.");
+        return true;
       case CardAction.none:
-        break;
+        setNextPlayer();
+        return true;
     }
+    return true;
   }
 
   UnoCard currentCard() {
     return thrown.last;
   }
 
-  void setNextPlayer() {
+  void setNextPlayer({int skip = 1}) {
     if (turnDirection == TurnDirection.clockwise) {
-      currentTurn = ((currentTurn + 1) % numberOfPlayers).round();
+      currentTurn = ((currentTurn + skip) % numberOfPlayers).round();
     } else {
-      currentTurn = ((currentTurn - 1) % numberOfPlayers).round();
+      currentTurn = ((currentTurn - skip) % numberOfPlayers).round();
     }
+    print("Current Turn: $currentTurn");
   }
 
   void switchPlay() {
@@ -139,6 +172,7 @@ class UnoGame {
   }
 
   void drawCardFromDeck() {
+    print("${currentHand().name} is drawing a card.");
     drawCardAction();
     setNextPlayer();
   }
@@ -149,22 +183,30 @@ class UnoGame {
   }
 
   void playTurn(var state) {
-    print("Playing turn. Hand: $currentTurn");
+    print("${currentHand().name}'s turn...");
     if (!isGameOver()) {
-      if (currentTurn > 0) {
+      if (!this.isHumanTurn()) {
         Random random = Random();
         int seconds = random.nextInt(3) + 2;
         Future.delayed(Duration(seconds: seconds), () {
           UnoCard _card = currentHand().playCardOrDraw(currentCard());
           if (_card == null) {
             drawCardFromDeck();
+            playTurn(state);
           } else {
-            playCard(_card);
+            if (playCard(_card)) playTurn(state);
           }
           state.setState(() {});
-          playTurn(state);
         });
       }
     }
+  }
+
+  bool isHumanTurn() {
+    return currentHand() == humanHand();
+  }
+
+  UnoHand humanHand() {
+    return this.hands[0];
   }
 }

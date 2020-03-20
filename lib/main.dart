@@ -71,13 +71,10 @@ class _MyHomePageState extends State<MyHomePage> {
         return game.canPlayCard(card);
       },
       onAccept: (UnoCard card) {
-        game.playCard(card);
-        game.isGameOver();
-        if (game.needsColorDecision()) {
-        } else {
+        if (game.playCard(card)) {
           game.playTurn(this);
-          this.setState(() {});
         }
+        this.setState(() {});
       },
       builder: (context, list1, list2) {
         return Container(
@@ -126,16 +123,16 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           Row(
                             children: [
-                              colorChoice(
-                                  "Green", Colors.green, CardColor.green),
                               colorChoice("Red", Colors.red, CardColor.red),
+                              colorChoice("Blue", Colors.blue, CardColor.blue),
                             ],
                           ),
                           Row(
                             children: [
-                              colorChoice("Blue", Colors.blue, CardColor.blue),
                               colorChoice(
                                   "Yellow", Colors.yellow, CardColor.yellow),
+                              colorChoice(
+                                  "Green", Colors.green, CardColor.green),
                             ],
                           )
                         ],
@@ -163,6 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
         color: color,
         child: Text(title),
         onPressed: () {
+          print("Human chose: $cardColor");
           game.setColor(cardColor);
           game.playTurn(this);
           this.setState(() {});

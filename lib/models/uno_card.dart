@@ -62,9 +62,9 @@ class UnoCard {
   }
 
   bool canAccept(UnoCard card) {
-    if (card.symbol == CardSymbol.changeColor) return true;
-    if (card.symbol == CardSymbol.drawFour) return true;
-    return (card.color == this.color) || (card.symbol == this.symbol);
+    if (card.color == CardColor.colorless) return true;
+    return (this.game.currentColor == card.color) ||
+        (card.symbol == this.symbol);
   }
 
   String imageName() {
