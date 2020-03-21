@@ -43,19 +43,19 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
               Container(
                 alignment: Alignment.topCenter,
                 // color: Colors.brown,
-                child: game.hands[1].toWidget(),
+                child: game.players[1].hand.toWidget(),
               ),
               Column(
                 children: [
-                  game.hands[2].toWidget(),
+                  game.players[2].hand.toWidget(),
                   playTable(context),
-                  game.hands[0].toWidget(),
+                  game.players[0].hand.toWidget(),
                 ],
               ),
               Container(
                 alignment: Alignment.topCenter,
                 // color: Colors.cyan,
-                child: game.hands[3].toWidget(),
+                child: game.players[3].hand.toWidget(),
               ),
             ],
           ),
@@ -92,67 +92,9 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
 
   Widget playArea() {
     if (game.isGameOver()) {
-      return Container(
-        child: Center(
-          child: Column(
-            children: [
-              Text("Game Over!", style: TextStyle(fontSize: 30)),
-              FlatButton(
-                child:
-                    Text("Play again", style: TextStyle(color: Colors.white)),
-                onPressed: () {
-                  initGame();
-                  this.setState(() {});
-                },
-              ),
-            ],
-          ),
-        ),
-      );
+      return gameOverWidget();
     } else {
-      return Row(
-        children: [
-          Expanded(
-            child: Center(
-              child: game.currentCard().toWidget(),
-            ),
-          ),
-          Expanded(
-            child: Center(
-              child: game.needsColorDecision()
-                  ? Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              colorChoice("Red", Colors.red, CardColor.red),
-                              colorChoice("Blue", Colors.blue, CardColor.blue),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              colorChoice(
-                                  "Yellow", Colors.yellow, CardColor.yellow),
-                              colorChoice(
-                                  "Green", Colors.green, CardColor.green),
-                            ],
-                          )
-                        ],
-                      ),
-                    )
-                  : GestureDetector(
-                      child: game.deck.toWidget(),
-                      onTap: () {
-                        game.drawCardFromDeck();
-                        game.playTurn(this);
-                        this.setState(() {});
-                      },
-                    ),
-            ),
-          ),
-        ],
-      );
+      return cardsAndDeck();
     }
   }
 
@@ -169,6 +111,82 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
           this.setState(() {});
         },
       ),
+    );
+  }
+
+  Widget gameOverWidget() {
+    return Container(
+      child: Center(
+        child: Column(
+          children: [
+            Text("Game Over!",
+                style: TextStyle(fontSize: 30, color: Colors.white)),
+            FlatButton(
+              child: Text("Play again", style: TextStyle(color: Colors.white)),
+              onPressed: () {
+                initGame();
+                this.setState(() {});
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget cardsAndDeck() {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10.0),
+                bottomLeft: Radius.circular(10.0),
+              ),
+              color: Colors.black,
+            ),
+            child: Center(
+              child: game.currentCard().toWidget(),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Center(
+            child: game.needsColorDecision()
+                ? Container(
+                    alignment: Alignment.center,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            colorChoice("Red", Colors.red, CardColor.red),
+                            colorChoice("Blue", Colors.blue, CardColor.blue),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            colorChoice(
+                                "Yellow", Colors.yellow, CardColor.yellow),
+                            colorChoice("Green", Colors.green, CardColor.green),
+                          ],
+                        )
+                      ],
+                    ),
+                  )
+                : GestureDetector(
+                    child: Container(
+                      child: game.deck.toWidget(),
+                    ),
+                    onTap: () {
+                      game.drawCardFromDeck();
+                      game.playTurn(this);
+                      this.setState(() {});
+                    },
+                  ),
+          ),
+        ),
+      ],
     );
   }
 }

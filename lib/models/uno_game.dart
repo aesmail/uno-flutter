@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:uno/models/uno_card.dart';
 import 'package:uno/models/uno_deck.dart';
 import 'package:uno/models/uno_hand.dart';
+import 'package:uno/models/uno_player.dart';
 
 enum TurnDirection { clockwise, counterclockwise }
 
 class UnoGame {
   int numberOfPlayers;
-  List<UnoHand> hands;
+  List<UnoPlayer> players;
   UnoDeck deck;
   int currentTurn;
   List<UnoCard> thrown;
@@ -21,14 +22,14 @@ class UnoGame {
   void prepareGame() {
     deck = UnoDeck();
     deck.setGame(this);
-    hands = List.generate(numberOfPlayers, (index) {
+    players = List.generate(numberOfPlayers, (index) {
       bool hidden = index != 0;
       String name = hidden ? "AI$index" : "Human";
       bool isHorizontal = index == 0 || index == 2;
-      UnoHand hand = deck.dealHand(
-          name: name, isHidden: hidden, isHorizontal: isHorizontal);
+      UnoHand hand =
+          deck.dealHand(isHidden: hidden, isHorizontal: isHorizontal);
       hand.game = this;
-      return hand;
+      return UnoPlayer(hand: hand, name: name);
     });
     UnoCard firstCard = deck.drawCard();
     firstCard.game = this;
@@ -41,7 +42,7 @@ class UnoGame {
     currentTurn = 0;
   }
 
-  UnoHand currentHand() => hands[currentTurn];
+  UnoPlayer currentPlayer() => players[currentTurn];
 
   Color getPlayingColor() {
     switch (currentColor) {
@@ -61,11 +62,11 @@ class UnoGame {
 
   bool canPlayCard(UnoCard card) {
     UnoCard lastCard = currentCard();
-    return (currentHand() == card.hand) && lastCard.canAccept(card);
+    return (currentPlayer() == card.hand.player) && lastCard.canAccept(card);
   }
 
   bool playCard(UnoCard card) {
-    print("${card.hand.name}: ${card.symbol}:${card.color}");
+    print("${card.hand.player.name}: ${card.symbol}:${card.color}");
     if (canPlayCard(card)) {
       card.hand.drawCard(card);
       card.isHidden = false;
@@ -112,7 +113,7 @@ class UnoGame {
           setNextPlayer();
           return false;
         } else {
-          var _color = currentHand().getMostColor();
+          var _color = currentPlayer().hand.getMostColor();
           print("Choosing color: $_color");
           this.setColor(_color);
           setNextPlayer();
@@ -130,7 +131,7 @@ class UnoGame {
           setNextPlayer();
           return false;
         } else {
-          var _color = currentHand().getMostColor();
+          var _color = currentPlayer().hand.getMostColor();
           print("Choosing color: $_color");
           setNextPlayer();
           this.setColor(_color);
@@ -167,29 +168,30 @@ class UnoGame {
 
   void drawCardAction() {
     UnoCard _card = deck.drawCard(hide: false);
+    print("Cards in deck: ${deck.cards.length}");
     _card.game = this;
-    currentHand().addCard(_card);
+    currentPlayer().hand.addCard(_card);
   }
 
   void drawCardFromDeck() {
-    print("${currentHand().name} is drawing a card.");
+    print("${currentPlayer().name} is drawing a card.");
     drawCardAction();
     setNextPlayer();
   }
 
   bool isGameOver() {
-    winner = hands.indexWhere((hand) => hand.cards.isEmpty);
+    winner = players.indexWhere((player) => player.hand.cards.isEmpty);
     return winner >= 0;
   }
 
   void playTurn(var state) {
-    print("${currentHand().name}'s turn...");
+    print("${currentPlayer().name}'s turn...");
     if (!isGameOver()) {
       if (!this.isHumanTurn()) {
         Random random = Random();
         int seconds = random.nextInt(3) + 2;
         Future.delayed(Duration(seconds: seconds), () {
-          UnoCard _card = currentHand().playCardOrDraw(currentCard());
+          UnoCard _card = currentPlayer().hand.playCardOrDraw(currentCard());
           if (_card == null) {
             drawCardFromDeck();
             playTurn(state);
@@ -203,10 +205,10 @@ class UnoGame {
   }
 
   bool isHumanTurn() {
-    return currentHand() == humanHand();
+    return currentPlayer() == humanPlayer();
   }
 
-  UnoHand humanHand() {
-    return this.hands[0];
+  UnoPlayer humanPlayer() {
+    return this.players[0];
   }
 }

@@ -16,47 +16,18 @@ class _UnoHandWidgetState extends State<UnoHandWidget> {
   double _currentSpace;
   UnoHand _hand;
   Size screen;
-  // AnimationController _handAnimation;
-  // double _handScale;
 
   @override
   initState() {
     super.initState();
     _hand = this.widget.hand;
-    // _handScale = 0.65;
-    // _handAnimation = AnimationController(
-    //   vsync: this,
-    //   lowerBound: 0.65,
-    //   upperBound: 1.0,
-    //   duration: Duration(milliseconds: 500),
-    // );
-    // _handAnimation.addListener(() {
-    //   this.setState(() {
-    //     _handScale = _handAnimation.value;
-    //   });
-    // });
   }
-
-  // @override
-  // void dispose() {
-  //   _handAnimation.reverse();
-  //   _handAnimation.dispose();
-  //   super.dispose();
-  // }
-
-  // void getHandScale() {
-  //   if (this._hand == this._hand.game.currentHand()) {
-  //     _handAnimation.forward(from: 0.65);
-  //   } else {
-  //     if (_handAnimation.isCompleted) _handAnimation.reverse();
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
     screen = MediaQuery.of(context).size;
     return Transform.scale(
-      scale: this._hand == this._hand.game.currentHand() ? 0.9 : 0.75,
+      scale: this._hand.player == this._hand.game.currentPlayer() ? 0.9 : 0.75,
       child: Container(
         width: getHandWidth(),
         height: getHandHeight(),

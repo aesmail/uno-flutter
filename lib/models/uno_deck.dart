@@ -38,7 +38,6 @@ class UnoDeck {
       var orientation =
           isHorizontal ? HandOrientation.horizontal : HandOrientation.vertical;
       return UnoHand(
-          name: name,
           cards: _hand,
           isHidden: isHidden,
           orientation: orientation,

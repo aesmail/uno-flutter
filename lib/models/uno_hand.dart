@@ -1,6 +1,7 @@
 import 'package:uno/models/uno_card.dart';
 import 'package:flutter/material.dart';
 import 'package:uno/models/uno_game.dart';
+import 'package:uno/models/uno_player.dart';
 import 'package:uno/widgets/uno_hand_widget.dart';
 
 enum HandOrientation {
@@ -13,13 +14,12 @@ class UnoHand {
   bool isHidden;
   HandOrientation orientation;
   UnoGame game;
-  String name;
+  UnoPlayer player;
 
   UnoHand(
       {this.cards,
       this.game,
       this.isHidden = false,
-      this.name = "Computer",
       this.orientation = HandOrientation.horizontal}) {
     this.cards = this.cards.map((card) {
       card.hand = this;
