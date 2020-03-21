@@ -83,7 +83,8 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
             color: game.getPlayingColor(),
           ),
           height: 120,
-          width: screen.width > (525 + 150 + 150) ? 525.0 : screen.width / 2,
+          width:
+              250, // screen.width > (525 + 150 + 150) ? 525.0 : screen.width / 2,
           child: playArea(),
         );
       },
@@ -99,17 +100,20 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
   }
 
   Widget colorChoice(String title, Color color, CardColor cardColor) {
-    return SizedBox(
-      width: 75,
-      child: FlatButton(
-        color: color,
-        child: Text(title),
-        onPressed: () {
-          print("Human chose: $cardColor");
-          game.setColor(cardColor);
-          game.playTurn(this);
-          this.setState(() {});
-        },
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 3.0, top: 2.0),
+      child: SizedBox(
+        height: 25,
+        child: FlatButton(
+          color: color,
+          child: Text(title),
+          onPressed: () {
+            print("Human chose: $cardColor");
+            game.setColor(cardColor);
+            game.playTurn(this);
+            this.setState(() {});
+          },
+        ),
       ),
     );
   }
@@ -158,19 +162,10 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
                     alignment: Alignment.center,
                     child: Column(
                       children: [
-                        Row(
-                          children: [
-                            colorChoice("Red", Colors.red, CardColor.red),
-                            colorChoice("Blue", Colors.blue, CardColor.blue),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            colorChoice(
-                                "Yellow", Colors.yellow, CardColor.yellow),
-                            colorChoice("Green", Colors.green, CardColor.green),
-                          ],
-                        )
+                        colorChoice("", Colors.red, CardColor.red),
+                        colorChoice("", Colors.blue, CardColor.blue),
+                        colorChoice("", Colors.yellow, CardColor.yellow),
+                        colorChoice("", Colors.green, CardColor.green),
                       ],
                     ),
                   )

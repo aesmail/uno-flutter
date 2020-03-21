@@ -25,11 +25,26 @@ class UnoHand {
       card.hand = this;
       return card;
     }).toList();
+    reorderCards();
+  }
+
+  void reorderCards() {
+    List<CardColor> myColors = this.cards.map((c) => c.color).toSet().toList();
+    List<UnoCard> _orderedCards = [];
+    myColors.forEach((_color) {
+      List<UnoCard> _coloredCards =
+          this.cards.where((c) => c.color == _color).toList();
+      _coloredCards.sort(
+          (card1, card2) => card1.symbol.index.compareTo(card2.symbol.index));
+      _orderedCards.addAll(_coloredCards);
+    });
+    this.cards = _orderedCards;
   }
 
   UnoCard drawCard(UnoCard card) {
     if (cards.contains(card)) {
       cards.remove(card);
+      reorderCards();
       return card;
     }
     return null;
@@ -39,6 +54,7 @@ class UnoHand {
     card.hand = this;
     card.isHidden = this.isHidden;
     cards.add(card);
+    reorderCards();
   }
 
   List<UnoCard> suitableCards(UnoCard card) {

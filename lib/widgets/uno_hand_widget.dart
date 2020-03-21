@@ -75,12 +75,12 @@ class _UnoHandWidgetState extends State<UnoHandWidget> {
 
   void _resetValues() {
     int numberOfCards = _hand.cards.length;
-    _currentSpace = 1;
     double handWidth = _hand.orientation == HandOrientation.vertical
         ? getHandHeight()
         : getHandWidth();
     _overlap = (handWidth - 75) / numberOfCards;
-    if (_overlap > 75) _overlap = 75;
+    if (_overlap > 50) _overlap = 50;
+    _currentSpace = 1;
   }
 
   double getHandWidth() {
