@@ -105,6 +105,6 @@ class UnoHand {
   void emptyHand() => cards.clear();
 
   Widget toWidget() {
-    return UnoHandWidget(hand: this);
+    return UnoHandWidget(player: this.player);
   }
 }

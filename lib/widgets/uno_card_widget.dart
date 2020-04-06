@@ -31,7 +31,17 @@ class UnoCardWidget extends StatelessWidget {
   Widget frontFace() {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderRadius: BorderRadius.all(
+          Radius.circular(10),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 4,
+            spreadRadius: 0,
+            offset: Offset(-3, 0),
+          ),
+        ],
       ),
       height: cardHeight,
       width: cardWidth,
@@ -46,7 +56,7 @@ class UnoCardWidget extends StatelessWidget {
       ),
       height: cardHeight,
       width: cardWidth,
-      child: Image.asset("lib/static/images/card_back.png"),
+      child: Image.asset("lib/static/cards/card_back.png"),
     );
   }
 }

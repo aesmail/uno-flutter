@@ -20,9 +20,9 @@ class UnoGame {
   UnoGame({this.numberOfPlayers = 4});
 
   void prepareGame() {
-    deck = UnoDeck();
-    deck.setGame(this);
-    players = List.generate(numberOfPlayers, (index) {
+    this.deck = UnoDeck();
+    this.deck.setGame(this);
+    this.players = List.generate(numberOfPlayers, (index) {
       bool hidden = index != 0;
       String name = hidden ? "AI$index" : "Human";
       bool isHorizontal = index == 0 || index == 2;
@@ -33,13 +33,34 @@ class UnoGame {
     });
     UnoCard firstCard = deck.drawCard();
     firstCard.game = this;
-    currentColor = firstCard.color;
-    thrown = [firstCard];
-    winner = -1;
-    turnDirection = TurnDirection.clockwise;
-    // Random random = Random();
-    print("Initial card: ${firstCard.symbol}:${firstCard.color}");
-    currentTurn = 0;
+    this.currentColor = firstCard.color;
+    this.thrown = [firstCard];
+    this.winner = -1;
+    this.turnDirection = TurnDirection.clockwise;
+    this.currentTurn = 0;
+    this.calculateScores();
+  }
+
+  void playNextRound() {
+    this.deck.prepareDeck();
+    players.forEach((player) {
+      player.addToGameScore();
+      UnoHand hand = this.deck.dealHand(
+          isHidden: player.hand.isHidden,
+          isHorizontal: player.hand.isHorizontal());
+      hand.game = this;
+      hand.player = player;
+      player.hand = hand;
+    });
+    UnoCard firstCard = this.deck.drawCard();
+    firstCard.game = this;
+    this.currentColor = firstCard.color;
+    this.thrown.clear();
+    this.thrown = [firstCard];
+    this.winner = -1;
+    this.turnDirection = TurnDirection.clockwise;
+    this.currentTurn = 0;
+    this.calculateScores();
   }
 
   UnoPlayer currentPlayer() => players[currentTurn];
@@ -202,6 +223,10 @@ class UnoGame {
         });
       }
     }
+  }
+
+  void calculateScores() {
+    players.map((player) => player.calculateScore());
   }
 
   bool isHumanTurn() {

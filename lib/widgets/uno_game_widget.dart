@@ -21,51 +21,70 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
   }
 
   void initGame() {
-    game = null;
-    game = UnoGame();
-    game.prepareGame();
-    game.playTurn(this);
-    this.setState(() {});
+    this.setState(() {
+      game = null;
+      game = UnoGame();
+      game.prepareGame();
+      game.playTurn(this);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.blue[300],
-      body: Padding(
-        padding: const EdgeInsets.only(top: 5.0),
-        child: Container(
-          height: 460,
-          width: 880,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                alignment: Alignment.topCenter,
-                // color: Colors.brown,
-                child: game.players[1].hand.toWidget(),
+    game.calculateScores();
+    return Stack(
+      children: [
+        Positioned(
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          child: Image.asset("lib/static/backgrounds/background.jpeg"),
+        ),
+        Positioned(
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: Container(
+                height: 460,
+                width: 880,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      alignment: Alignment.topCenter,
+                      // color: Colors.brown,
+                      child: game.players[1].hand.toWidget(),
+                    ),
+                    Column(
+                      children: [
+                        game.players[2].hand.toWidget(),
+                        playTable(context),
+                        game.players[0].hand.toWidget(),
+                      ],
+                    ),
+                    Container(
+                      alignment: Alignment.topCenter,
+                      // color: Colors.cyan,
+                      child: game.players[3].hand.toWidget(),
+                    ),
+                  ],
+                ),
               ),
-              Column(
-                children: [
-                  game.players[2].hand.toWidget(),
-                  playTable(context),
-                  game.players[0].hand.toWidget(),
-                ],
-              ),
-              Container(
-                alignment: Alignment.topCenter,
-                // color: Colors.cyan,
-                child: game.players[3].hand.toWidget(),
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 
   Widget playTable(context) {
-    Size screen = MediaQuery.of(context).size;
+    // Size screen = MediaQuery.of(context).size;
     return DragTarget<UnoCard>(
       onWillAccept: (UnoCard card) {
         return game.canPlayCard(card);
@@ -78,13 +97,12 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
       },
       builder: (context, list1, list2) {
         return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(10.0)),
-            color: game.getPlayingColor(),
-          ),
+          // decoration: BoxDecoration(
+          //   borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          //   color: game.getPlayingColor(),
+          // ),
           height: 120,
-          width:
-              250, // screen.width > (525 + 150 + 150) ? 525.0 : screen.width / 2,
+          width: 250,
           child: playArea(),
         );
       },
@@ -123,13 +141,19 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
       child: Center(
         child: Column(
           children: [
-            Text("Game Over!",
-                style: TextStyle(fontSize: 30, color: Colors.white)),
+            Text(
+              "Game Over!",
+              style: TextStyle(fontSize: 30, color: Colors.white),
+            ),
             FlatButton(
-              child: Text("Play again", style: TextStyle(color: Colors.white)),
+              child: Text(
+                "Play again",
+                style: TextStyle(color: Colors.white),
+              ),
               onPressed: () {
-                initGame();
-                this.setState(() {});
+                this.setState(() {
+                  this.game.playNextRound();
+                });
               },
             ),
           ],
@@ -140,18 +164,29 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
 
   Widget cardsAndDeck() {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10.0),
-                bottomLeft: Radius.circular(10.0),
-              ),
-              color: Colors.black,
+              // borderRadius: BorderRadius.only(
+              //   topLeft: Radius.circular(10.0),
+              //   bottomLeft: Radius.circular(10.0),
+              // ),
+              color: Colors.transparent,
             ),
             child: Center(
               child: game.currentCard().toWidget(),
+            ),
+          ),
+        ),
+        Container(
+          height: 20,
+          width: 20,
+          decoration: BoxDecoration(
+            color: game.getPlayingColor(),
+            borderRadius: BorderRadius.all(
+              Radius.circular(10.0),
             ),
           ),
         ),
@@ -174,9 +209,13 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
                       child: game.deck.toWidget(),
                     ),
                     onTap: () {
-                      game.drawCardFromDeck();
-                      game.playTurn(this);
-                      this.setState(() {});
+                      if (game.isHumanTurn()) {
+                        game.drawCardFromDeck();
+                        game.playTurn(this);
+                        this.setState(() {});
+                      } else {
+                        print("Not your turn!");
+                      }
                     },
                   ),
           ),

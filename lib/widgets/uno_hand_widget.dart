@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:uno/models/uno_card.dart';
 import 'package:uno/models/uno_hand.dart';
+import 'package:uno/models/uno_player.dart';
 
 class UnoHandWidget extends StatefulWidget {
-  UnoHandWidget({Key key, this.hand}) : super(key: key);
+  UnoHandWidget({Key key, this.player}) : super(key: key);
 
-  final UnoHand hand;
+  final UnoPlayer player;
 
   @override
   _UnoHandWidgetState createState() => _UnoHandWidgetState();
@@ -14,27 +15,42 @@ class UnoHandWidget extends StatefulWidget {
 class _UnoHandWidgetState extends State<UnoHandWidget> {
   double _overlap;
   double _currentSpace;
-  UnoHand _hand;
   Size screen;
-
-  @override
-  initState() {
-    super.initState();
-    _hand = this.widget.hand;
-  }
 
   @override
   Widget build(BuildContext context) {
     screen = MediaQuery.of(context).size;
+    print(this.widget.player.calculateScore());
     return Transform.scale(
-      scale: this._hand.player == this._hand.game.currentPlayer() ? 0.9 : 0.75,
+      scale: this.widget.player == this.widget.player.hand.game.currentPlayer()
+          ? 0.9
+          : 0.75,
       child: Container(
         width: getHandWidth(),
         height: getHandHeight(),
         alignment: Alignment.center,
         child: Stack(
           alignment: Alignment.center,
-          children: _displayCards(),
+          children: this.widget.player.hand.game.isGameOver()
+              ? [
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    left: 0,
+                    bottom: 0,
+                    child: Center(
+                      child: Text(
+                        "${this.widget.player.name}\n${this.widget.player.roundScore} Points",
+                        maxLines: 2,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  )
+                ]
+              : _displayCards(),
         ),
       ),
     );
@@ -43,8 +59,8 @@ class _UnoHandWidgetState extends State<UnoHandWidget> {
   List<Widget> _displayCards() {
     _resetValues();
     double top, left;
-    return _hand.cards.map((card) {
-      card.isHidden = _hand.isHidden;
+    return this.widget.player.hand.cards.map((card) {
+      card.isHidden = this.widget.player.hand.isHidden;
       if (card.hand != null && card.hand.isVertical()) {
         left = shouldRaiseCard(card);
         top = _currentSpace;
@@ -74,17 +90,18 @@ class _UnoHandWidgetState extends State<UnoHandWidget> {
   }
 
   void _resetValues() {
-    int numberOfCards = _hand.cards.length;
-    double handWidth = _hand.orientation == HandOrientation.vertical
-        ? getHandHeight()
-        : getHandWidth();
+    int numberOfCards = this.widget.player.hand.cards.length;
+    double handWidth =
+        this.widget.player.hand.orientation == HandOrientation.vertical
+            ? getHandHeight()
+            : getHandWidth();
     _overlap = (handWidth - 75) / numberOfCards;
     if (_overlap > 50) _overlap = 50;
     _currentSpace = 1;
   }
 
   double getHandWidth() {
-    if (_hand.orientation == HandOrientation.horizontal) {
+    if (this.widget.player.hand.orientation == HandOrientation.horizontal) {
       return screen.width > (525 + 150 + 150) ? 525.0 : screen.width / 2;
     } else {
       return 150.0;
@@ -92,7 +109,7 @@ class _UnoHandWidgetState extends State<UnoHandWidget> {
   }
 
   double getHandHeight() {
-    if (_hand.orientation == HandOrientation.vertical) {
+    if (this.widget.player.hand.orientation == HandOrientation.vertical) {
       return 420.0;
     } else {
       return 140.0;

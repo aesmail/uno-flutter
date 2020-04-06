@@ -42,11 +42,13 @@ class UnoCard {
   final CardSymbol symbol;
   final CardColor color;
   final CardAction action;
+  final int value;
   UnoHand hand;
   UnoGame game;
   bool isHidden;
 
-  UnoCard({this.symbol, this.color, this.action, this.isHidden = true});
+  UnoCard(
+      {this.symbol, this.color, this.action, this.value, this.isHidden = true});
 
   void flipCard() {
     this.isHidden = !this.isHidden;
@@ -70,7 +72,10 @@ class UnoCard {
   String imageName() {
     String colorName = this.color.toString().split('.').last.toLowerCase();
     String symbolName = this.symbol.toString().split('.').last.toLowerCase();
-    return "lib/static/images/${colorName}_$symbolName.png";
+    if (symbolName == "zero") {
+      return "lib/static/images/${colorName}_$symbolName.png";
+    }
+    return "lib/static/cards/${colorName}_$symbolName.png";
   }
 
   Widget toWidget() {
