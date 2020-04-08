@@ -8,9 +8,13 @@ class UnoDeck {
   UnoGame game;
 
   UnoCard drawCard({bool hide = false}) {
-    UnoCard _card = cards.removeLast();
+    UnoCard _card = getLastCard();
     _card.isHidden = hide;
     return _card;
+  }
+
+  UnoCard getLastCard() {
+    return cards.removeLast();
   }
 
   void setGame(UnoGame theGame) {
@@ -62,12 +66,12 @@ class UnoDeck {
 
   List<UnoCard> createCardSet(CardColor setColor) {
     return [
-      UnoCard(
-        symbol: CardSymbol.zero,
-        color: setColor,
-        action: CardAction.none,
-        value: 0,
-      ),
+      // UnoCard(
+      //   symbol: CardSymbol.zero,
+      //   color: setColor,
+      //   action: CardAction.none,
+      //   value: 0,
+      // ),
       UnoCard(
         symbol: CardSymbol.one,
         color: setColor,

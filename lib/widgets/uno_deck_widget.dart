@@ -28,7 +28,8 @@ class _UnoDeckWidgetState extends State<UnoDeckWidget> {
   List<Widget> _displayCards() {
     return this.widget.deck.cards.map((card) {
       UnoCardWidget cardWidget = UnoCardWidget(card: card);
-      var theCard = Positioned(
+      var theCard = AnimatedPositioned(
+        duration: Duration(milliseconds: 350),
         left: _currentSpace,
         child: Draggable<UnoCardWidget>(
           data: cardWidget,

@@ -68,7 +68,8 @@ class _UnoHandWidgetState extends State<UnoHandWidget> {
         left = _currentSpace;
         top = shouldRaiseCard(card);
       }
-      var theCard = Positioned(
+      var theCard = AnimatedPositioned(
+        duration: Duration(milliseconds: 350),
         left: left,
         top: top,
         child: Draggable<UnoCard>(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uno/models/uno_card.dart';
 import 'package:uno/models/uno_game.dart';
+import 'dart:math' as math;
 
 class UnoGameWidget extends StatefulWidget {
   UnoGameWidget({Key key, this.title}) : super(key: key);
@@ -32,6 +33,7 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
   @override
   Widget build(BuildContext context) {
     game.calculateScores();
+    // Size screen = MediaQuery.of(context).size;
     return Stack(
       children: [
         Positioned(
@@ -79,6 +81,20 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
             ),
           ),
         ),
+        Positioned(
+          top: 25,
+          right: 10,
+          width: 50,
+          height: 50,
+          child: Container(
+            width: 30,
+            height: 30,
+            child: FlatButton(
+              child: Image.asset("lib/static/images/hamburger_menu.png"),
+              onPressed: () => print("menu!"),
+            ),
+          ),
+        )
       ],
     );
   }
@@ -138,6 +154,7 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
 
   Widget gameOverWidget() {
     return Container(
+      color: Colors.lightBlue[900],
       child: Center(
         child: Column(
           children: [
@@ -181,13 +198,26 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
           ),
         ),
         Container(
-          height: 20,
-          width: 20,
-          decoration: BoxDecoration(
-            color: game.getPlayingColor(),
-            borderRadius: BorderRadius.all(
-              Radius.circular(10.0),
-            ),
+          height: 30,
+          width: 30,
+          child: Stack(
+            children: [
+              Positioned(
+                top: 0,
+                left: 0,
+                width: 30,
+                height: 30,
+                child: Transform(
+                  alignment: Alignment.center,
+                  transform: Matrix4.rotationY(math.pi *
+                      (game.turnDirection == TurnDirection.clockwise ? 2 : 1)),
+                  child: Image.asset(
+                    "lib/static/images/rotation.png",
+                    color: game.getPlayingColor(),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         Expanded(
@@ -205,14 +235,16 @@ class _UnoGameWidgetState extends State<UnoGameWidget> {
                     ),
                   )
                 : GestureDetector(
-                    child: Container(
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 350),
                       child: game.deck.toWidget(),
                     ),
                     onTap: () {
                       if (game.isHumanTurn()) {
-                        game.drawCardFromDeck();
-                        game.playTurn(this);
-                        this.setState(() {});
+                        this.setState(() {
+                          game.drawCardFromDeck();
+                          game.playTurn(this);
+                        });
                       } else {
                         print("Not your turn!");
                       }

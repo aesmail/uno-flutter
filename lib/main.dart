@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:uno/widgets/uno_game_widget.dart';
+import 'package:flutter/services.dart';
+import 'package:uno/pages/main_page.dart';
 
-void main() => runApp(MyApp());
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+  ]);
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -12,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: UnoGameWidget(title: "Uno Flutter"),
+      home: MainPage(),
     );
   }
 }
